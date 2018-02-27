@@ -1,0 +1,5 @@
+Hi! Here is a generic code for using Random Decision Forests for Classification problems. It works well with any number of classification classes. I haven't used any libraries to implement the algorithm, so the code can be referred to if you want to implement Random Decision Forests from Scratch. The "main.py" file is the one that contains the actual code. The "generate_data.py" file can be used to obtain dummy data easily. For practical purposes, the code was tested on the NIST dataset for handwritten digits classification. The accuracy was ~85%. However, this was obtained by training the Forest using parameters such that it could be trained in ~3-4 minutes and using only a fraction of Training Points (lack of patience :P). There may still be some problems in the code, optimization related, mostly. I'm only mentioning the biggest one, as of now, but I will update with minor details later.
+
+Bugs/Problems :
+
+1. To choose a random line in R^2 (y = mx + c), I chose m and c randomly from a uniform distribution from -1000 to 1000. I can't figure out a good way to obtain "true" random line. So, if you can hellp me in that, please contact me. :)
