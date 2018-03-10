@@ -127,18 +127,27 @@ def get_accuracy(forest, data_test):
 	correct = 0
 	for point in data_test:
 		prediction = predict(forest, point[0:-1])
-		print("Actual: " + str(point[-1]-shifting_factor) + " Predicted: " + str(prediction-shifting_factor))
+
+		##########################
+		temp = str(point[0])+","+str(point[1])+","+str(prediction-shifting_factor)
+		print(temp)
+		##########################
+
+		# print("Actual: " + str(point[-1]-shifting_factor) + " Predicted: " + str(prediction-shifting_factor))
 		if  prediction == point[-1]:
 			correct = correct + 1
 	return float(correct)/float(len(data_test))
 
 shifting_factor = 1 # Modify this according to the data lables. The smallest label should correspond to 1.
 # Parameters
-forest_size = 30
-max_depth = 9
+forest_size = 20
+max_depth = 10
 min_elems = 10
 randomness = 20
-n_colors = 10
+n_colors = 2
+
+data_train = get_data('data_train.csv')
+data_test = get_data('data_test.csv')
 
 forest = []
 for i in range(forest_size):
@@ -146,9 +155,22 @@ for i in range(forest_size):
 	for j in range(2**(max_depth+1)-1):
 		tree = tree + [[0, [0, 0], [0, 0]]]
 	forest = forest + [tree]
-
-data_train = get_data('nist_data_train.csv')
-data_test = get_data('nist_data_test.csv')
 train_forest(forest, data_train)
 accuracy = get_accuracy(forest, data_test)
-print("Accuracy: " + str(accuracy))
+print(accuracy)
+
+# with open('temp','a') as file:
+# 	for k in range(1,21):
+# 		max_depth = k
+# 		forest = []
+# 		for i in range(forest_size):
+# 			tree = []
+# 			for j in range(2**(max_depth+1)-1):
+# 				tree = tree + [[0, [0, 0], [0, 0]]]
+# 			forest = forest + [tree]
+# 		train_forest(forest, data_train)
+# 		accuracy = get_accuracy(forest, data_test)
+# 		print(k,accuracy)
+# 		file.write(str(k) + " " + str(accuracy) + "\n")	
+
+
