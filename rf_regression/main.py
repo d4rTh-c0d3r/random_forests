@@ -133,10 +133,9 @@ max_depth = 10
 min_elems = 5
 randomness = 20
 
-ranges = [[-100, 100]]*(len(data_train[0])-1) # Depends upon number of dimensions of data and their ranges, defined manually as of now
-
 data_train = get_data('data_train.csv')
 data_test = get_data('data_test.csv')
+ranges = [[-100, 100]]*(len(data_train[0])-1) # Depends upon number of dimensions of data and their ranges, defined manually as of now
 
 forest = []
 for i in range(forest_size):

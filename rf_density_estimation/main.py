@@ -17,6 +17,8 @@ def get_data(name):
 	return data
 
 def get_gaussian_fit(data):
+	if len(data) <= 1:
+		return [np.mean(data,axis=0),np.identity(len(data[0]))]
 	data_ = np.array(data).T
 	mean = np.mean(data, axis=0)
 	cov = np.cov(data_)
@@ -59,8 +61,8 @@ def get_best_attribute(data, attributes):
 
 def train_tree(tree, data, curr_index):
 	if curr_index > len(tree) or len(data) == 0:
-		if(len(data) == 0):
-			tree[curr_index-1][0] = -2
+		if len(data) == 0:
+			tree[curr_index-1][2] = [[0]*dimensions,np.identity(dimensions),0]	
 		return
 	if len(data) < min_elems or 2*curr_index > len(tree):
 		tree[curr_index-1][2] = get_gaussian_fit(data)+[float(len(data))/total_size] # Partition function still missing, sad.
@@ -83,7 +85,10 @@ def train_forest(forest, data):
 		train_tree(forest[i], data, 1)
 
 def calculate_value(point, h): # Needs to be changed to multiply Partition Function, later :( (h = [mean, cov_matrix, pi])
+	# print(h) # Remove Later
 	x = np.array(point)
+	if la.det(h[1]) == 0:
+		h[1] = np.identity(dimensions)
 	return h[2]*(mvn.pdf(x,h[0],h[1]))
 
 def predict_tree(tree, point, curr_index):
@@ -101,7 +106,7 @@ def predict(forest, point):
 	return prediction
 
 def sample_point(tree, curr_index):
-	print(tree[curr_index-1])
+	# print(tree[curr_index-1])
 	if tree[curr_index-1][0] == -2:
 		print("Hit the end")
 	elif tree[curr_index-1][0] == -1:
@@ -109,15 +114,17 @@ def sample_point(tree, curr_index):
 	else:
 		r = np.random.uniform(0)
 		ratio = tree[curr_index-1][3][0]/(tree[curr_index-1][3][0]+tree[curr_index-1][3][1]) 
-		print(r,ratio)
+		# print(r,ratio)
 		if r < ratio:
 			return sample_point(tree,2*curr_index)
 		else:
 			return sample_point(tree,2*curr_index+1)
 
 
+# The function which takes user input and does accordingly.
 def main_function():
 	# choice = int(input("0: Value of PDF at a point \n1: Sample a point from the learnt distribution\n"))
+	# format: 0/1 \n (if zero) new line separated n floats, where n is the number of dimensions.
 	choice = int(input())
 	if choice == 0:
 		point = []
@@ -132,24 +139,59 @@ def main_function():
 		print("Invalid Input")
 	main_function()
 
+# only for 2-D data
+def check_de_output():
+	with open('data_predicted.csv','a') as file:
+		for x in range(-20,21):
+			for y in range(-20,21):
+				prediction = predict(forest,[x,y])
+				# print(str(x) + " " + str(y) + " " + str(prediction))
+				file.write(str(x) + " " + str(y) + " " + prediction + "\n")
 
-forest_size = 10
-max_depth = 5
+def check_sampling_output(n):
+	with open('data_sampled.csv','a') as file:
+		for _ in range(n):
+			t = random.randint(0, len(forest)-1)
+			sample = sample_point(forest[t],1)
+			temp = ""
+			for x in sample[:-1]:
+				temp = temp + str(x) + ","
+			temp = temp + sample[-1] + "\n"
+			file.write(temp)
+	forest = []
+	for i in range(forest_size):
+		tree = []
+		for j in range(2**(max_depth+1)-1):
+			tree = tree + [[-1, 0, [],[]]] # dimension/leaf(-1), threshold, h,split sizes for sampling
+		forest = forest + [tree]
+
+	data = get_data('data_sampled.csv')
+	dimensions = len(data[0])
+	ranges = [[-100, 100]]*len(data) # Depends upon number of dimensions of data and their ranges, defined manually as of now
+	total_size = float(len(data))
+	train_forest(forest, data)
+	check_de_output()
+
+
+forest_size = 20
+max_depth = 10
 min_elems = 5
 randomness = 20
-ranges = [[-100, 100],[-100,100]] # Depends upon number of dimensions of data and their ranges, defined manually as of now
 
 forest = []
 for i in range(forest_size):
 	tree = []
 	for j in range(2**(max_depth+1)-1):
-		tree = tree + [[-1, 0, [],[]]]
+		tree = tree + [[-1, 0, [],[]]] # dimension/leaf(-1), threshold, h,split sizes for sampling
 	forest = forest + [tree]
 
 data = get_data('data_ul.csv')
+dimensions = len(data[0])
 ranges = [[-100, 100]]*len(data) # Depends upon number of dimensions of data and their ranges, defined manually as of now
 total_size = float(len(data))
 train_forest(forest, data)
 print("Training Over")
 
 main_function()
+# check_de_output()
+# check_sampling_output(500)

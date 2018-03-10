@@ -1,0 +1,2 @@
+set dgrid3d 50,50 # The values can be changed depending on the number of "squares" you want on your grid
+splot "file_name" u 1:2:3 with lines
