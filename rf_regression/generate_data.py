@@ -8,25 +8,25 @@ num_test = 20
 with open("data_train.csv",'a') as file:
 	x = 0
 	for i in range(num_train):
-		y = 5 - x + numpy.random.normal(0,1)
+		y = 5 - x + 0*numpy.random.normal(0,1)
 		file.write(str(x)+","+str(y)+"\n")
 		x = x + 5/num_train
 
 	x = 0
 	for i in range(num_train):
-		y = x + 5 + numpy.random.normal(0,1)
+		y = x + 5 + 0*numpy.random.normal(0,1)
 		file.write(str(x)+","+str(y)+"\n")
 		x = x - 5/num_train
 
 with open("data_test.csv",'a') as file:
 	x = 0
 	for i in range(num_test):
-		y = 5 - x + numpy.random.normal(0,1)
+		y = 5 - x + 0*numpy.random.normal(0,1)
 		file.write(str(x)+","+str(y)+"\n")
 		x = x + 5/num_test
 
 	x = 0
 	for i in range(num_test):
-		y = x + 5 + numpy.random.normal(0,1)
+		y = x + 5 + 0*numpy.random.normal(0,1)
 		file.write(str(x)+","+str(y)+"\n")
 		x = x - 5/num_test

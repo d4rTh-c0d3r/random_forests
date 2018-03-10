@@ -18,7 +18,10 @@ def get_data(name):
 def log_det_cov(data): # Variant of Unlabelled Shannon Entropy
 	data_ = numpy.array(data).T
 	cov = numpy.cov(data_)
-	return math.log(la.det(cov))
+	det = abs(la.det(cov))
+	if det == 0:
+	  return 0
+	return math.log(det)
 
 def information_gain(left, right): # Will have to extremely correct this
   if len(left) <= 2 or len(right) <= 2: # 2, because if a set has 1 point, covariance is undefined
@@ -103,12 +106,11 @@ def calculate_value(point, h):
 	return value
 
 def predict_tree(tree, point, curr_index):
- 	if tree[curr_index-1][0]  == -1:
- 	  print("here")
- 		return calculate_value(point, tree[curr_index-1][2])
- 	if point[tree[curr_index-1][0]] < tree[curr_index-1][1]:
- 		return predict_tree(tree, point, 2*curr_index)
- 	return predict_tree(tree, point, 2*curr_index + 1)
+	if tree[curr_index-1][0]  == -1:
+		return calculate_value(point, tree[curr_index-1][2])
+	if point[tree[curr_index-1][0]] < tree[curr_index-1][1]:
+		return predict_tree(tree, point, 2*curr_index)
+	return predict_tree(tree, point, 2*curr_index + 1)
 
 def predict(forest, point):
 	prediction = float(0)
@@ -125,11 +127,16 @@ def get_variance(forest, data_test):
  		variance = variance + (point[-1] - prediction)**2	
  	return variance/float(len(data_test))
 
-
-forest_size = 5
-max_depth = 5
-min_elems = 2
+# Parameters
+forest_size = 2
+max_depth = 10
+min_elems = 5
 randomness = 20
+
+ranges = [[-100, 100]]*(len(data_train[0])-1) # Depends upon number of dimensions of data and their ranges, defined manually as of now
+
+data_train = get_data('data_train.csv')
+data_test = get_data('data_test.csv')
 
 forest = []
 for i in range(forest_size):
@@ -138,9 +145,19 @@ for i in range(forest_size):
 		tree = tree + [[-1, 0, []]]
 	forest = forest + [tree]
 
-data_train = get_data('data_train.csv')
-data_test = get_data('data_test.csv')
-ranges = [[-100, 100]]*(len(data_train[0])-1) # Depends upon number of dimensions of data and their ranges, defined manually as of now
+
 train_forest(forest, data_train)
 variance = get_variance(forest, data_test)
 print("Variance: " + str(variance))
+
+# for k in range(1,31):
+# 	forest_size = k
+# 	forest = []
+# 	for i in range(forest_size):
+# 		tree = []
+# 		for j in range(2**(max_depth+1)-1):
+# 			tree = tree + [[-1, 0, []]]
+# 		forest = forest + [tree]\
+# 	train_forest(forest, data_train)
+# 	variance = get_variance(forest, data_test)
+# 	print(k,variance)
