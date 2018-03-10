@@ -129,13 +129,12 @@ def get_accuracy(forest, data_test):
 		prediction = predict(forest, point[0:-1])
 
 		##########################
-		temp = str(point[0])+","+str(point[1])+","+str(prediction-shifting_factor)+"\n"
-		with open('data_predicted.csv','a') as file:
-			file.write(temp)
-
+		# temp = str(point[0])+","+str(point[1])+","+str(prediction-shifting_factor)+"\n"
+		# with open('data_predicted.csv','a') as file:
+		# 	file.write(temp)
 		##########################
 
-		# print("Actual: " + str(point[-1]-shifting_factor) + " Predicted: " + str(prediction-shifting_factor))
+		print("Actual: " + str(point[-1]-shifting_factor) + " Predicted: " + str(prediction-shifting_factor))
 		if  prediction == point[-1]:
 			correct = correct + 1
 	return float(correct)/float(len(data_test))
