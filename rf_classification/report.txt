@@ -85,4 +85,24 @@ Results of Classification Random Forests on NIST data.
 14 0.83
 15 0.82 [OVER FITTING]
 
-3. As Function of Max Depth [forest_size = 2; min_elements = 10; randomness = 20]
+4. As Function of Max Depth [forest_size = 2; min_elements = 10; randomness = 20]
+
+1  0.15 [UNDER FITTING]
+2  0.33
+3  0.43
+4  0.52
+5  0.50
+6  0.67
+7  0.57
+8  0.64
+9  0.56
+10 0.53
+11 0.66
+12 0.64
+13 0.54
+14 0.65
+15 0.56
+16 0.58
+17 0.67
+
+5. For data with 2 squares (inner and outer), the accuracy was ~90%.
